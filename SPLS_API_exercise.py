@@ -35,7 +35,7 @@ def checkFloat(s):
 
 app = Flask(__name__)
 
-
+# Question1
 @app.route('/houseprice', methods=["GET"])
 def houseprice():
     # Getting paramaters from the request
@@ -90,7 +90,7 @@ def houseprice():
 
 # =====================================================
 
-
+# Question2
 @app.route('/houselookup', methods=["GET"])
 def houselookup():
     parameters = request.args
