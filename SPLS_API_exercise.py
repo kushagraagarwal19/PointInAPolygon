@@ -52,7 +52,6 @@ def houseprice():
         return http_response
 
     # Check if the parameters provided are numeric values or not
-    # This also checks if the value if the value is positive or not
     if not (checkFloat(GrLivArea) and checkFloat(TotalBsmtSF) and checkFloat(GarageArea) and checkFloat(YearBuilt)):
         http_response = make_response(jsonify(
             {'Error': 'Please provide numerical parameterss'}
@@ -100,13 +99,14 @@ def houselookup():
     # Checking if parameters are odd or even and have at least 3 coordinate values
     if paramLength >= 6 and paramLength % 2 != 0:
         http_response = make_response(jsonify(
-            {'Error': 'To make a bounding box, coordinate values should be even in number'}
+            {'Error': 'To make a bounding box, coordinate values should be even in number and >= 6'}
         ))
         return http_response
 
     boundingBox = []
 
     for i in range(0, paramLength//2):
+        # Checking the paramaters in the format of (x1,y1), (x2,y2) ....
         dictKeyX = 'x' + str(i + 1)
         dictKeyY = 'y' + str(i + 1)
 
@@ -131,9 +131,9 @@ def houselookup():
         next(readCSV)
 
         finalHouseIDs = []
-        i = 1
         for row in readCSV:
             try:
+                # Get all the values from the CSV
                 houseId = row[0]
                 x1 = float(row[1])
                 y1 = float(row[2])
@@ -147,14 +147,15 @@ def houselookup():
                 point2 = Point(x2, y2)
                 point3 = Point(x3, y3)
                 point4 = Point(x4, y4)
-                i += 1
 
                 # Checking if the house is inside the polygon
                 if polygon.contains(point1) and polygon.contains(point2) and polygon.contains(point3) and polygon.contains(point4):
                     finalHouseIDs.append(houseId)
             except Exception as err:
-                print("Oops! An error occurred " + err)
-
+                http_response = make_response(jsonify(
+                    {'Error': 'Oops! An error occurred [ERROR]: ' + err}
+                ))
+                return http_response
 
     http_response = make_response(jsonify(
         {'HouseId': finalHouseIDs}
@@ -162,6 +163,7 @@ def houselookup():
     return http_response
 
 # =====================================================
+
 
 # debug = True as it was in development mode.
 # For production, please remove this parameter
