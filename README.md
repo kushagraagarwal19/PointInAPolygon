@@ -1,4 +1,4 @@
-# PointInPolygon
+# PointInAPolygon
 
 A Python Flask app to find if a point is present in a polygon or not 
 
